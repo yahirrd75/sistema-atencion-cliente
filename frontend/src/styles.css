@@ -1,0 +1,4 @@
+html, body { min-height: 100%; margin: 0; }
+body { min-width: 320px; }
+button { font: inherit; }
+button:focus-visible { outline: 3px solid #78bba0; outline-offset: 3px; }

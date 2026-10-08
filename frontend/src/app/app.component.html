@@ -1,0 +1,122 @@
+<main class="page-shell">
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Inicio">
+      <span class="brand-mark" aria-hidden="true">AC</span>
+      <span>Atención al cliente</span>
+    </a>
+    <div class="connection" [class.online]="(connected$ | async) === true">
+      <span class="connection-dot"></span>
+      {{ (connected$ | async) ? 'En tiempo real' : 'Conectando…' }}
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">CENTRO DE SERVICIO <span>·</span> 4 MESAS</p>
+      <h1>Sistema de Atención<br />al Cliente</h1>
+      <p class="hero-description">Gestiona turnos y mantén cada mesa al día, en un solo lugar.</p>
+    </div>
+    <button class="take-ticket" type="button" (click)="takeTicket()" [disabled]="busy">
+      <span class="ticket-icon" aria-hidden="true">＋</span>
+      <span>TOMAR TURNO</span>
+      <span class="button-hint">Siguiente: <ng-container *ngIf="state$ | async as state">#{{ state.next_turn }}</ng-container><ng-container *ngIf="!(state$ | async)">—</ng-container></span>
+    </button>
+  </section>
+
+  <section class="stats" *ngIf="state$ | async as state" aria-label="Resumen de atención">
+    <article class="stat-card current-stat">
+      <span class="stat-label">TURNO ACTUAL</span>
+      <strong>{{ state.current_turn === null ? '—' : '#' + state.current_turn }}</strong>
+      <span class="stat-note">En atención</span>
+    </article>
+    <article class="stat-card">
+      <span class="stat-label">SIGUIENTE TURNO</span>
+      <strong>#{{ state.next_turn }}</strong>
+      <span class="stat-note">Listo para asignar</span>
+    </article>
+    <article class="stat-card">
+      <span class="stat-label">TURNOS GENERADOS</span>
+      <strong>{{ state.total_generated }}</strong>
+      <span class="stat-note">Desde que inició el servidor</span>
+    </article>
+    <article class="stat-card">
+      <span class="stat-label">MESAS DISPONIBLES</span>
+      <strong>{{ state.available_desks }}<small> / 4</small></strong>
+      <span class="stat-note">{{ state.occupied_desks }} en atención</span>
+    </article>
+  </section>
+
+  <div class="feedback error" role="alert" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback success" role="status" *ngIf="successMessage">{{ successMessage }}</div>
+
+  <section class="work-area" *ngIf="state$ | async as state">
+    <div class="desks-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">PUNTOS DE SERVICIO</p>
+          <h2>Mesas de atención</h2>
+        </div>
+        <span class="section-count">{{ state.occupied_desks }} de 4 ocupadas</span>
+      </div>
+
+      <div class="desk-grid">
+        <article class="desk-card" *ngFor="let desk of state.desks; trackBy: trackDesk" [class.is-busy]="desk.ticket !== null">
+          <div class="desk-card-top">
+            <div class="desk-identity">
+              <span class="desk-icon" aria-hidden="true">{{ desk.id }}</span>
+              <div><h3>Mesa {{ desk.id }}</h3><span class="desk-caption">Punto de servicio</span></div>
+            </div>
+            <span class="status-pill" [class.serving]="desk.ticket !== null">
+              <span class="status-dot"></span>{{ desk.ticket ? 'Atendiendo' : 'Disponible' }}
+            </span>
+          </div>
+
+          <div class="desk-turn" *ngIf="desk.ticket; else emptyDesk">
+            <span>Turno en curso</span>
+            <strong>#{{ desk.ticket.number }}</strong>
+          </div>
+          <ng-template #emptyDesk>
+            <div class="desk-turn empty-turn"><span>Mesa libre</span><strong>—</strong></div>
+          </ng-template>
+
+          <button class="finish-button" type="button" *ngIf="desk.ticket" (click)="finishDesk(desk.id)" [disabled]="busy">
+            Finalizar atención <span aria-hidden="true">→</span>
+          </button>
+          <div class="available-note" *ngIf="!desk.ticket"><span class="available-check">✓</span> Lista para el siguiente turno</div>
+        </article>
+      </div>
+    </div>
+
+    <aside class="queue-panel">
+      <div class="section-heading queue-heading">
+        <div><p class="eyebrow">SIGUIENTES CLIENTES</p><h2>Fila de espera</h2></div>
+        <span class="queue-count">{{ state.waiting_queue.length }}</span>
+      </div>
+      <p class="queue-description">Los turnos se asignan en orden de llegada a la siguiente mesa disponible.</p>
+
+      <div class="queue-list" *ngIf="state.waiting_queue.length; else emptyQueue">
+        <div class="queue-item" *ngFor="let ticket of state.waiting_queue; let first = first; trackBy: trackTicket">
+          <span class="queue-position" [class.first-position]="first">{{ first ? '1.º' : '·' }}</span>
+          <span class="queue-number">Turno #{{ ticket.number }}</span>
+          <span class="queue-status" [class.next-up]="first">{{ first ? 'Siguiente' : 'En espera' }}</span>
+        </div>
+      </div>
+      <ng-template #emptyQueue>
+        <div class="empty-queue">
+          <span class="queue-empty-icon" aria-hidden="true">✓</span>
+          <strong>Sin turnos en espera</strong>
+          <span>Los nuevos clientes aparecerán aquí si las mesas están ocupadas.</span>
+        </div>
+      </ng-template>
+
+      <div class="queue-footer"><span class="fifo-icon" aria-hidden="true">↕</span><span>Atención por orden de llegada</span></div>
+    </aside>
+  </section>
+
+  <div class="loading-state" *ngIf="!(state$ | async)">
+    <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
+    <p>Conectando con el sistema…</p>
+  </div>
+
+  <footer class="page-footer"><span>Atención clara, en cada paso.</span><span>Estado sincronizado en tiempo real</span></footer>
+</main>
