@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "backend/app/main.py": {
-      "excludeFiles": "{frontend/node_modules/**,frontend/.angular/**,frontend/src/**,frontend/public/**,frontend/scripts/**,frontend/*.json,frontend/*.md,frontend/.editorconfig}"
+      "excludeFiles": "{**/node_modules/**,frontend/.angular/**,frontend/src/**,frontend/public/**,frontend/scripts/**,frontend/*.json,frontend/*.md,frontend/.editorconfig}"
     }
   }
 }
