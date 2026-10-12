@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
-from app.models.ticket import Ticket
+from .ticket import Ticket
 
 
 class Desk(BaseModel):

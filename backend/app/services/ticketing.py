@@ -2,9 +2,9 @@ import asyncio
 from collections import deque
 from collections.abc import Awaitable, Callable
 
-from app.models.desk import Desk
-from app.models.state import SystemState
-from app.models.ticket import Ticket, TicketStatus
+from ..models.desk import Desk
+from ..models.state import SystemState
+from ..models.ticket import Ticket, TicketStatus
 
 
 class DeskNotServingError(ValueError):

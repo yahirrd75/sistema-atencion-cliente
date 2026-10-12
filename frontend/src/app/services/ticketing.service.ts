@@ -6,8 +6,18 @@ import { Desk, SystemState, Ticket } from '../models/system-state.model';
 @Injectable({ providedIn: 'root' })
 export class TicketingService implements OnDestroy {
   private readonly host = window.location.hostname || 'localhost';
-  private readonly apiUrl = `http://${this.host}:8000/api`;
-  private readonly websocketUrl = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${this.host}:8000/ws`;
+  private readonly localBackend =
+    window.location.port === '4200' || ['localhost', '127.0.0.1', '::1'].includes(this.host);
+  private readonly backendOrigin = this.localBackend
+    ? `http://${this.host.includes(':') ? `[${this.host}]` : this.host}:8000`
+    : window.location.origin;
+  private readonly websocketProtocol =
+    this.localBackend || window.location.protocol !== 'https:' ? 'ws' : 'wss';
+  private readonly websocketHost = this.localBackend
+    ? `${this.host.includes(':') ? `[${this.host}]` : this.host}:8000`
+    : window.location.host;
+  private readonly apiUrl = `${this.backendOrigin}/api`;
+  private readonly websocketUrl = `${this.websocketProtocol}://${this.websocketHost}/ws`;
   private readonly stateSubject = new BehaviorSubject<SystemState | null>(null);
   private readonly connectedSubject = new BehaviorSubject(false);
   private socket?: WebSocket;

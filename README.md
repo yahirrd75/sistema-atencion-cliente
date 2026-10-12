@@ -22,6 +22,12 @@ Aplicación web para generar turnos consecutivos, asignarlos a cuatro mesas y ma
 
 El frontend envía las acciones a la API REST. Un servicio de turnos serializa las operaciones concurrentes, modifica el estado en memoria y publica una instantánea a cada conexión WebSocket. Al conectarse, un navegador recibe primero el estado vigente. Si pierde la conexión, intenta reconectarse automáticamente.
 
+## Despliegue en Vercel
+
+El proyecto incluye configuración para construir Angular y servir el frontend, la API FastAPI y el WebSocket en el mismo dominio de Vercel. Importa el repositorio completo `yahirrd75/sistema-atencion-cliente` desde el panel de Vercel y deja el directorio raíz como `.`; el build de Angular se ejecuta desde `pyproject.toml`.
+
+El sistema conserva su diseño sin base de datos: los turnos viven en memoria. En Vercel, las funciones pueden escalar a instancias distintas y reiniciarse, por lo que el estado puede reiniciarse o no coincidir entre instancias. Para un uso multiusuario de producción se necesitaría un almacén y un canal de publicación compartidos.
+
 ## Reglas de turnos y mesas
 
 El primer turno recibe la primera mesa disponible (al inicio, Mesa 1), y así se ocupan las cuatro mesas. Cuando todas están ocupadas, los nuevos turnos se agregan al final de la fila. La fila conserva el orden de llegada.

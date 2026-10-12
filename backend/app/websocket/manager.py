@@ -1,6 +1,6 @@
 from fastapi import WebSocket
 
-from app.models.state import SystemState
+from ..models.state import SystemState
 
 
 class ConnectionManager:

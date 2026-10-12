@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Request
 
-from app.models.desk import Desk
-from app.models.state import SystemState
-from app.models.ticket import Ticket
-from app.services.ticketing import DeskNotServingError, TicketingService
+from ..models.desk import Desk
+from ..models.state import SystemState
+from ..models.ticket import Ticket
+from ..services.ticketing import DeskNotServingError, TicketingService
 
 router = APIRouter(prefix="/api")
 

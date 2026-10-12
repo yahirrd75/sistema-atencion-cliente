@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 
-from app.models.desk import Desk
-from app.models.ticket import Ticket
+from .desk import Desk
+from .ticket import Ticket
 
 
 class SystemState(BaseModel):

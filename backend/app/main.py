@@ -1,11 +1,12 @@
 from contextlib import asynccontextmanager
+import os
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers.state import router as state_router
-from app.services.ticketing import TicketingService
-from app.websocket.manager import ConnectionManager
+from .routers.state import router as state_router
+from .services.ticketing import TicketingService
+from .websocket.manager import ConnectionManager
 
 
 @asynccontextmanager
@@ -50,3 +51,11 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         manager.disconnect(websocket)
     except Exception:
         manager.disconnect(websocket)
+
+
+if os.getenv("VERCEL") == "1":
+    app.frontend(
+        "/",
+        directory="frontend/dist/frontend/browser",
+        fallback="index.html",
+    )
