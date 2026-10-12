@@ -24,7 +24,7 @@ El frontend envía las acciones a la API REST. Un servicio de turnos serializa l
 
 ## Despliegue en Vercel
 
-El proyecto incluye configuración para construir Angular y servir el frontend, la API FastAPI y el WebSocket en el mismo dominio de Vercel. Importa el repositorio completo `yahirrd75/sistema-atencion-cliente` desde el panel de Vercel y deja el directorio raíz como `.`; el build de Angular se ejecuta desde `pyproject.toml`.
+El proyecto usa Vercel Services para compilar Angular y FastAPI por separado bajo el mismo dominio. Las rutas `/api/*` y `/ws` llegan al backend; las demás sirven el frontend. El proyecto Vercel debe usar el preset `Services` y conectarse al repositorio `yahirrd75/sistema-atencion-cliente` con la raíz `.`.
 
 El sistema conserva su diseño sin base de datos: los turnos viven en memoria. En Vercel, las funciones pueden escalar a instancias distintas y reiniciarse, por lo que el estado puede reiniciarse o no coincidir entre instancias. Para un uso multiusuario de producción se necesitaría un almacén y un canal de publicación compartidos.
 
