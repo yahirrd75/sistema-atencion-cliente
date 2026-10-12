@@ -12,7 +12,7 @@ dependencies = [
 entrypoint = "backend.app.main:app"
 
 [tool.vercel.scripts]
-build = "npm --prefix frontend ci && npm --prefix frontend run build"
+build = "npm --prefix frontend ci && npm --prefix frontend run build && node frontend/scripts/clean-node-modules.cjs"
 
 [tool.vercel.fastapi.static]
 exclude = true
