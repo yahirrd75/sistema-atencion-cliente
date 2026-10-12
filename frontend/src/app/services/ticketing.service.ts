@@ -6,8 +6,7 @@ import { Desk, SystemState, Ticket } from '../models/system-state.model';
 @Injectable({ providedIn: 'root' })
 export class TicketingService implements OnDestroy {
   private readonly host = window.location.hostname || 'localhost';
-  private readonly localBackend =
-    window.location.port === '4200' || ['localhost', '127.0.0.1', '::1'].includes(this.host);
+  private readonly localBackend = window.location.port === '4200';
   private readonly backendOrigin = this.localBackend
     ? `http://${this.host.includes(':') ? `[${this.host}]` : this.host}:8000`
     : window.location.origin;
